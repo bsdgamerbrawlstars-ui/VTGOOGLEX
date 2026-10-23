@@ -5,162 +5,318 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#0a0f18">
 <title>VTGOOGLEX</title>
-<link rel="manifest" href='data:application/manifest+json,{"name":"VTGOOGLEX","short_name":"VTGOOGLEX","description":"Умный поисковик","start_url":".","display":"standalone","background_color":"#0a0f18","theme_color":"#0a0f18","icons":[{"src":"https://img.icons8.com/color/192/000000/search--v1.png","sizes":"192x192","type":"image/png"}]}'>
+
+<!-- ПРАВИЛЬНАЯ ССЫЛКА НА МАНИФЕСТ -->
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
-  :root{--bg:#0a0f18;--bg2:#121a29;--card:#172233;--card2:#1e2c42;--line:#2a3a54;--txt:#e6edf3;--dim:#8b98a5;--accent:#3b82f6;--green:#22c55e;}
+  :root{
+    --bg:#0a0f18; --bg2:#121a29; --card:#172233; --card2:#1e2c42;
+    --line:#2a3a54; --txt:#e6edf3; --dim:#8b98a5;
+    --accent:#3b82f6; --accent2:#2563eb; --red:#f85149; --green:#22c55e;
+  }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;margin:0;overflow:hidden;font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);-webkit-user-select:none;user-select:none;}
-  input,textarea{-webkit-user-select:text;user-select:text}
-  .header{display:flex;align-items:center;justify-content:space-between;padding:15px;background:var(--bg2);border-bottom:1px solid var(--line);z-index:10}
-  .header-left{display:flex;align-items:center;gap:15px}
-  .add-btn{background:var(--card2);color:var(--green);border:1px solid var(--green);border-radius:8px;padding:8px 12px;font-weight:bold}
-  .header h1{margin:0;font-size:20px;font-weight:800;color:#fff;display:flex;gap:2px}
-  .vt{color:var(--accent)}
+  
+  html,body{
+    height:100%;margin:0;overflow:hidden;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+
+  .header{display:flex;align-items:center;justify-content:space-between;padding:15px;background:var(--bg2);border-bottom:1px solid var(--line);flex:0 0 auto;z-index:10}
+  .header-left { display: flex; align-items: center; gap: 15px; }
+
+  .add-btn{
+    background: var(--card2); color: var(--green); border: 1px solid var(--green);
+    border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: bold; 
+    cursor: pointer; display: flex; align-items: center; gap: 5px;
+  }
+  .add-btn:active{transform:scale(0.95); background: rgba(34,197,94,0.1);}
+
+  .header h1{ margin:0; font-size:20px; font-weight:800; color:#fff; display:flex; align-items:center; gap:2px;}
+  .header h1 .vt { color: var(--accent); }
+  
+  .header-right{display:flex;align-items:center;gap:10px}
   .status{font-size:11px;color:var(--green);background:rgba(34,197,94,0.1);padding:4px 8px;border-radius:10px;border:1px solid rgba(34,197,94,0.3)}
-  .search-area{padding:15px;background:var(--bg2);border-bottom:1px solid var(--line)}
-  .search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:6px 15px;gap:10px}
-  .search-box input{flex:1;background:none;border:none;color:var(--txt);font-size:16px;outline:none}
-  .search-btn{background:var(--accent);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:18px}
-  main{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:15px}
-  .article-card{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:20px}
-  .article-card h2{margin:0 0 10px 0;color:var(--accent);font-size:20px}
-  .article-content{font-size:15px;line-height:1.6}
-  .source-tag{display:inline-block;font-size:10px;padding:4px 8px;border-radius:6px;margin-bottom:12px;font-weight:bold;text-transform:uppercase}
-  .source-offline{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
-  .source-online{background:rgba(59,130,246,0.15);color:var(--accent);border:1px solid rgba(59,130,246,0.3)}
-  .empty-state{text-align:center;color:var(--dim);margin-top:40px}
-  .loading-dots{display:flex;flex-direction:column;align-items:center;padding:40px;gap:15px;color:var(--dim)}
-  .dots-wrap{display:flex;gap:5px}
+
+  .search-area{padding:15px;background:var(--bg2);flex:0 0 auto;border-bottom:1px solid var(--line)}
+  .search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:6px 15px;gap:10px;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+  .search-box input{flex:1;background:none;border:none;color:var(--txt);font-size:16px;outline:none;padding:10px 0;}
+  .search-btn{background:var(--accent);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .search-btn:active{transform:scale(0.9)}
+
+  main{flex:1 1 auto;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:15px;-webkit-overflow-scrolling:touch;}
+  
+  .article-card {
+    background: var(--card2); border: 1px solid var(--line); border-radius: 14px; padding: 20px; animation: fade .3s ease;
+    display: flex; flex-direction: column;
+  }
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  
+  .article-card h2 { margin: 0 0 10px 0; color: var(--accent); font-size: 20px; }
+  .article-content { font-size: 15px; line-height: 1.6; color: var(--txt); }
+  .article-content b, .article-content strong { color: #fff; }
+  .article-content ul { padding-left: 20px; margin: 10px 0; }
+  .article-content li { margin-bottom: 8px; }
+  .article-content p { margin: 10px 0; }
+  
+  .source-tag { display: inline-block; font-size: 10px; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; width: max-content;}
+  .source-offline { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .source-online { background: rgba(59,130,246,0.15); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); }
+
+  .empty-state{text-align:center;color:var(--dim);margin-top:40px;font-size:15px;line-height:1.6;}
+
+  .loading-dots{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:15px;color:var(--dim);font-size:14px;}
+  .dots-wrap{display:flex;gap:5px;}
   .dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:bounce 1.4s infinite ease-in-out both}
-  .dot:nth-child(1){animation-delay:-0.32s}.dot:nth-child(2){animation-delay:-0.16s}
+  .dot:nth-child(1){animation-delay:-0.32s}
+  .dot:nth-child(2){animation-delay:-0.16s}
   @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+
   .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
   .modal.open{display:flex}
-  .modal-content{background:var(--bg2);width:100%;max-width:400px;border-radius:16px;padding:20px;border:1px solid var(--accent)}
+  .modal-content{background:var(--bg2);width:100%;max-width:400px;border-radius:16px;padding:20px;border:1px solid var(--accent);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
   .modal-content h2{margin:0 0 15px 0;font-size:18px;color:var(--accent)}
-  .modal-content input,.modal-content textarea{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:12px;border-radius:8px;margin-bottom:12px;outline:none}
-  .modal-content textarea{height:120px;resize:none}
-  .modal-btns{display:flex;gap:10px}
-  .modal-btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:600}
-  .btn-save{background:var(--accent);color:#fff}.btn-cancel{background:var(--card2);color:var(--txt)}
+  .modal-content input, .modal-content textarea{
+    width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);
+    padding:12px;border-radius:8px;margin-bottom:12px;font-family:inherit;font-size:14px;outline:none;
+  }
+  .modal-content textarea{resize:none;height:120px;}
+  .modal-content input:focus, .modal-content textarea:focus{border-color:var(--accent)}
+  .modal-btns{display:flex;gap:10px;margin-top:10px}
+  .modal-btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+  .btn-save{background:var(--accent);color:#fff}
+  .btn-cancel{background:var(--card2);color:var(--txt)}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="header-left">
     <button class="add-btn" onclick="openAddModal()">➕ Добавить</button>
     <h1><span class="vt">VT</span><span class="googlex">GOOGLEX</span></h1>
   </div>
-  <div class="header-right"><div class="status" id="statusText">Облако</div></div>
+  <div class="header-right">
+    <div class="status" id="statusText">Облако</div>
+  </div>
 </div>
+
 <div class="search-area">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Задай любой вопрос..." onkeypress="handleKeyPress(event)">
+    <input type="text" id="searchInput" placeholder="Задай любой вопрос..." autocomplete="off" onkeypress="handleKeyPress(event)">
     <button class="search-btn" onclick="performSearch()">🔍</button>
   </div>
 </div>
+
 <main id="results"></main>
+
 <div class="modal" id="addModal">
   <div class="modal-content">
     <h2>Создать статью</h2>
     <input type="text" id="addTitle" placeholder="Заголовок">
-    <input type="text" id="addKeywords" placeholder="Ключевые слова">
-    <textarea id="addContent" placeholder="Текст..."></textarea>
+    <input type="text" id="addKeywords" placeholder="Ключевые слова (через запятую)">
+    <textarea id="addContent" placeholder="Текст статьи (Markdown)"></textarea>
     <div class="modal-btns">
       <button class="modal-btn btn-cancel" onclick="closeAddModal()">Отмена</button>
-      <button class="modal-btn btn-save" onclick="saveManualArticle()">Сохранить</button>
+      <button class="modal-btn btn-save" onclick="saveManualArticle()">Сохранить в облако</button>
     </div>
   </div>
 </div>
+
 <script>
 document.addEventListener('copy', (e) => e.preventDefault());
 document.addEventListener('cut', (e) => e.preventDefault());
 document.addEventListener('contextmenu', (e) => e.preventDefault());
+
 const JSONBIN_KEY = "$2a$10$/PoNicrdbL.rIhzyL7VU1eZGosnY9QRlNkd5o240YIl0m7t1O36Xq"; 
 const JSONBIN_ID = "6adadf936ac621605a4afe3d";
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
+
 let localCache = [];
-try { const saved = localStorage.getItem('vtgooglex_articles'); if(saved) localCache = JSON.parse(saved); } catch(e){}
+try {
+    const saved = localStorage.getItem('vtgooglex_articles');
+    if(saved) localCache = JSON.parse(saved);
+} catch(e){}
+
 function handleKeyPress(e) { if (e.key === 'Enter') performSearch(); }
+
 function parseMarkdown(text) {
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/^\s*[-*]\s+(.*)$/gm, '<li>$1</li>').replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>').replace(/\n/g, '<br>');
+    let html = text;
+    html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    html = html.replace(/^\s*[-*]\s+(.*)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    html = html.replace(/\n/g, '<br>');
+    return html;
 }
+
 function openAddModal() { document.getElementById('addModal').classList.add('open'); }
 function closeAddModal() { document.getElementById('addModal').classList.remove('open'); }
+
 async function saveManualArticle() {
     const title = document.getElementById('addTitle').value.trim();
     const keywordsRaw = document.getElementById('addKeywords').value.trim();
     const content = document.getElementById('addContent').value.trim();
-    if (!title || !content) return alert("Заполни поля!");
+
+    if (!title || !content) return alert("Заполни Заголовок и Текст!");
+
     const keywords = keywordsRaw.split(',').map(k => k.trim().toLowerCase());
     if(keywordsRaw) keywords.push(title.toLowerCase());
+
+    const saveBtn = document.querySelector('.btn-save');
+    saveBtn.textContent = "Сохранение...";
+    saveBtn.disabled = true;
+
     let newArticle = { title, keywords, content, query: title };
+    
     try {
         let getRes = await fetch(JSONBIN_URL + "/latest", { headers: { 'X-Master-Key': JSONBIN_KEY } });
         let existingData = await getRes.json();
         let cloudArray = existingData.record || [];
         if (!Array.isArray(cloudArray)) cloudArray = [];
+
         cloudArray.unshift(newArticle);
-        await fetch(JSONBIN_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY }, body: JSON.stringify(cloudArray) });
-        localCache = cloudArray; localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
-        alert("✅ Сохранено в облако!");
+        await fetch(JSONBIN_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+            body: JSON.stringify(cloudArray)
+        });
+
+        localCache = cloudArray;
+        localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
+        alert("✅ Статья добавлена в облако!");
     } catch(e) {
-        localCache.unshift(newArticle); localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
-        alert("⚠️ Сохранено локально.");
+        localCache.unshift(newArticle);
+        localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
+        alert("⚠️ Нет интернета. Статья сохранена локально.");
     }
+
     closeAddModal();
-    document.getElementById('addTitle').value = ''; document.getElementById('addKeywords').value = ''; document.getElementById('addContent').value = '';
+    document.getElementById('addTitle').value = '';
+    document.getElementById('addKeywords').value = '';
+    document.getElementById('addContent').value = '';
+    saveBtn.textContent = "Сохранить в облако";
+    saveBtn.disabled = false;
 }
+
 async function performSearch() {
   const query = document.getElementById('searchInput').value.trim();
   if (!query) return;
-  const resultsDiv = document.getElementById('results'); const statusText = document.getElementById('statusText'); resultsDiv.innerHTML = '';
+  
+  const resultsDiv = document.getElementById('results');
+  const statusText = document.getElementById('statusText');
+  resultsDiv.innerHTML = '';
+  
   const lowerQuery = query.toLowerCase();
-  let matches = localCache.filter(a => (a.title + " " + (a.keywords ? a.keywords.join(" ") : "") + " " + a.content).toLowerCase().includes(lowerQuery));
+
+  let allArticles = [...localCache];
+
+  let matches = allArticles.filter(a => {
+      const textToSearch = (a.title + " " + (a.keywords ? a.keywords.join(" ") : "") + " " + a.content).toLowerCase();
+      return textToSearch.includes(lowerQuery);
+  });
+
   if (matches.length > 0) {
       statusText.textContent = "Найдено: " + matches.length;
-      matches.forEach(match => { resultsDiv.innerHTML += renderCardHTML(match.title, match.content, 'offline'); });
+      matches.forEach(match => {
+          resultsDiv.innerHTML += renderCardHTML(match.title, match.content, 'offline');
+      });
       return;
   }
+
   statusText.textContent = "Облако...";
   resultsDiv.innerHTML = `<div class="loading-dots"><div class="dots-wrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>Поиск в облаке...</div></div>`;
+
   let cloudData = [];
   try {
       let res = await fetch(JSONBIN_URL + "/latest", { headers: { 'X-Master-Key': JSONBIN_KEY } });
-      if(res.ok) { let data = await res.json(); cloudData = data.record || []; if (!Array.isArray(cloudData)) cloudData = []; localCache = cloudData; localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache)); }
+      if(res.ok) {
+          let data = await res.json();
+          cloudData = data.record || [];
+          if (!Array.isArray(cloudData)) cloudData = [];
+          localCache = cloudData;
+          localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
+      }
   } catch(e) {}
-  let cloudMatches = cloudData.filter(a => (a.title + " " + (a.keywords ? a.keywords.join(" ") : "") + " " + a.content).toLowerCase().includes(lowerQuery));
+
+  let cloudMatches = cloudData.filter(a => {
+      const textToSearch = (a.title + " " + (a.keywords ? a.keywords.join(" ") : "") + " " + a.content).toLowerCase();
+      return textToSearch.includes(lowerQuery);
+  });
+
   if (cloudMatches.length > 0) {
-      statusText.textContent = "Из облака"; resultsDiv.innerHTML = ''; 
-      cloudMatches.forEach(match => { resultsDiv.innerHTML += renderCardHTML(match.title, match.content, 'online'); });
+      statusText.textContent = "Из облака";
+      resultsDiv.innerHTML = ''; 
+      cloudMatches.forEach(match => {
+          resultsDiv.innerHTML += renderCardHTML(match.title, match.content, 'online');
+      });
       return;
   }
+
   statusText.textContent = "Генерация ИИ...";
-  resultsDiv.innerHTML = `<div class="loading-dots"><div class="dots-wrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>ИИ создает статью...</div></div>`;
+  resultsDiv.innerHTML = `<div class="loading-dots"><div class="dots-wrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>ИИ создает подробную статью...</div></div>`;
+
   try {
-      let url = `https://text.pollinations.ai/${encodeURIComponent("Напиши подробную статью: " + query)}?model=openai`;
-      let response = await fetch(url); if (!response.ok) throw new Error("Err");
-      let aiReply = await response.text(); let newArticle = { query: query, title: query, content: aiReply, keywords: [lowerQuery] };
+      let prompt = `Ты — поисковик VTGOOGLEX. Пользователь ищет: "${query}". 
+      Напиши максимально подробную, развернутую статью-шпаргалку. 
+      Раздели на смысловые блоки, используй списки и жирный шрифт для важных терминов.`;
+      
+      let url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`;
+      let response = await fetch(url);
+      if (!response.ok) throw new Error("Network error");
+      
+      let aiReply = await response.text();
+      let newArticle = { query: query, title: query.charAt(0).toUpperCase() + query.slice(1), content: aiReply, keywords: [lowerQuery] };
+
       try {
           let getRes = await fetch(JSONBIN_URL + "/latest", { headers: { 'X-Master-Key': JSONBIN_KEY } });
-          let existingData = await getRes.json(); let cloudArray = existingData.record || []; if (!Array.isArray(cloudArray)) cloudArray = [];
+          let existingData = await getRes.json();
+          let cloudArray = existingData.record || [];
+          if (!Array.isArray(cloudArray)) cloudArray = [];
           cloudArray.unshift(newArticle);
-          await fetch(JSONBIN_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY }, body: JSON.stringify(cloudArray) });
-          localCache = cloudArray; localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
-      } catch(e) { localCache.unshift(newArticle); localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache)); }
-      statusText.textContent = "Создано ИИ"; resultsDiv.innerHTML = renderCardHTML(newArticle.title, newArticle.content, 'ai');
+          await fetch(JSONBIN_URL, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+              body: JSON.stringify(cloudArray)
+          });
+          localCache = cloudArray;
+          localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
+      } catch(e) {
+          localCache.unshift(newArticle);
+          localStorage.setItem('vtgooglex_articles', JSON.stringify(localCache));
+      }
+
+      statusText.textContent = "Создано ИИ";
+      resultsDiv.innerHTML = renderCardHTML(newArticle.title, newArticle.content, 'ai');
+
   } catch (error) {
-      resultsDiv.innerHTML = `<div class="empty-state"><p>Ничего не найдено, нет интернета.</p></div>`; statusText.textContent = "Офлайн";
+      resultsDiv.innerHTML = `
+        <div class="empty-state">
+            <p>По запросу "<b>${query}</b>" ничего не найдено.</p>
+            <p style="margin-top:10px; font-size:13px;">В офлайн-базе нет ответа, а интернет недоступен для ИИ.</p>
+        </div>
+      `;
+      statusText.textContent = "Офлайн";
   }
 }
+
 function renderCardHTML(title, content, sourceType) {
     const htmlContent = parseMarkdown(content);
-    let sourceBadge = sourceType === 'offline' ? `<div class="source-tag source-offline">💾 Из памяти</div>` : (sourceType === 'online' ? `<div class="source-tag source-online">☁️ Из облака</div>` : `<div class="source-tag source-online">✨ Сгенерировано ИИ</div>`);
-    return `<div class="article-card">${sourceBadge}<h2>${title}</h2><div class="article-content">${htmlContent}</div></div>`;
+    
+    let sourceBadge = '';
+    if(sourceType === 'offline') sourceBadge = `<div class="source-tag source-offline">💾 Из памяти</div>`;
+    else if(sourceType === 'online') sourceBadge = `<div class="source-tag source-online">☁️ Из облака</div>`;
+    else sourceBadge = `<div class="source-tag source-online">✨ Сгенерировано ИИ</div>`;
+
+    return `
+        <div class="article-card">
+            ${sourceBadge}
+            <h2>${title}</h2>
+            <div class="article-content">${htmlContent}</div>
+        </div>
+    `;
 }
 </script>
 </body>
 </html>
-
