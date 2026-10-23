@@ -327,5 +327,21 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<!-- СКРЫТИЕ НАДПИСИ КОНСТРУКТОРА -->
+<style>
+  #watermark, .watermark, 
+  div[style*="position: fixed"][style*="bottom"],
+  div[style*="position: fixed;"][style*="bottom:"],
+  div[style*="bottom: 0"] {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      width: 0 !important;
+      pointer-events: none !important;
+  }
+</style>
+
 </body>
 </html>
