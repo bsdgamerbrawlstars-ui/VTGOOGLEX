@@ -317,6 +317,15 @@ function renderCardHTML(title, content, sourceType) {
         </div>
     `;
 }
+
+// Регистрация Service Worker для PWABuilder
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW зарегистрирован'))
+      .catch(err => console.log('Ошибка SW', err));
+  });
+}
 </script>
 </body>
 </html>
